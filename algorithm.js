@@ -77,8 +77,7 @@ function getMostCertainWord(wordPool){
     console.log(bestWord);
     return bestWord;
 }
-var word;
-var i = 1;
+
 // while(word_pool1.length !== 0){
 // word_pool1 = getAllMatchingPatterns('raise', [ 'masse', 'pause', 'lapse', 'cause', 'false' ], '02022');
 // console.log(word_pool1);
