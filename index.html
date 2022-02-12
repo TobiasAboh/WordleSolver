@@ -1,0 +1,157 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="myStyle.css">
+    </head>
+    <body>
+        <!-- <script data-main="scripts" src="node_modules/requirejs/require.js"></script> -->
+        <script type="text/javascript", src="algorithm.js"></script>
+        <div></div>
+        <ul id="grid">
+            <li>
+                <p class="box" id="1" ></p>
+                <p class="box" id="2" ></p>
+                <p class="box" id="3" ></p>
+                <p class="box" id="4" ></p>
+                <p class="box" id="5" ></p>
+            </li>
+        </ul>
+        <script type="text/javascript">
+            let guesses = [];
+            let feedbacks = [];
+            let guessNum = 0;
+            let words;
+            let paragraphs = [];
+            alert("suggested first words are stare, tares, arles. Press enter to get next word. match the colours to the colours on wordle. This is the most trash tutorial ever. You are welcome :-)");
+            let x = 1;
+            let lastKey = 1;
+            let boxes = document.getElementsByTagName('p');
+            let log = document.getElementById(x.toString());
+            document.addEventListener("keydown", logKey);
+            function changeColor(){
+                for(let i = 0; i < boxes.length; i++){
+                    let one = boxes[i];
+                    one.onclick = function(){
+                        console.log('wut');
+                        if(one.style.background === ''){
+                            one.style.background = 'yellow';
+                        }
+                        else if(one.style.background === 'yellow'){
+                            one.style.background = "lightgreen";
+                        }
+                        else{
+                            one.style.background = '';
+                        }
+                    }
+                }
+            }
+            
+
+            
+            function logKey(e){           
+                if((65 <= e.code.charCodeAt(0) <= 90) && e.code.slice(3).length === 1 && guessNum === 0){
+                    log.textContent = log.textContent === "" ? `${e.code.slice(3)}` : log.textContent;
+                    if(x < 6){
+                        x++;
+                        if(x !== 6){
+                            log = document.getElementById(x.toString());
+                        }
+                        
+                    }
+                    
+                }
+                else if (e.code == "Backspace" && guessNum === 0){
+                    if(x !== 1){
+                        document.getElementById((x-1).toString()).textContent = "";
+                        x--;
+                        log = document.getElementById(x.toString());
+                    }  
+                }
+                else if(e.code == "Enter"){
+                    guessNum++;
+                    let guess = "";
+                    // nextGuess = getMostCertainWord(getAllMatchingPatterns(guesses[guesses.length-1], word_pool, ))
+                    let feedback = "";
+                    
+                    
+
+                    if(guessNum === 1){
+                        for(let i = 1; i <= 5; i++){
+                            guess += document.getElementById(i.toString()).textContent;
+                            
+                            if(document.getElementById(i.toString()).style.background === ''){
+                                feedback += '0';
+                            }
+                            else if(document.getElementById(i.toString()).style.background === 'yellow'){
+                                feedback += '1';
+                            }
+                            else if(document.getElementById(i.toString()).style.background === 'lightgreen'){
+                                feedback += '2';
+                            }
+                        }
+                        if(guess.length == 5){
+                            guesses.push(guess.toLowerCase());
+                            feedbacks.push(feedback);
+                            words = getAllMatchingPatterns(guesses[0], word_pool, feedbacks[0]);
+                            guess = getMostCertainWord(words);
+                            guesses.push(guess.toLowerCase());
+                            let boxGrid = document.getElementById("grid");
+                            let row = document.createElement("li");
+                            let currParagraph = [];
+                            for (var i = 0; i < 5; i++) {
+                                let par = document.createElement("p");
+                                par.classList.add("box");
+                                par.appendChild(document.createTextNode(guess[i].toUpperCase()));
+                                currParagraph.push(par);
+                                row.appendChild(par);
+                            }
+                            paragraphs.push(currParagraph);
+                            boxGrid.appendChild(row);
+                            boxes = document.getElementsByTagName('p');
+                        }
+                    }
+                    else{
+                        for(let i = 0; i < 5; i++){
+                            
+                            if(paragraphs[paragraphs.length - 1][i].style.background === ''){
+                                feedback += '0';
+                            }
+                            else if(paragraphs[paragraphs.length - 1][i].style.background === 'yellow'){
+                                feedback += '1';
+                            }
+                            else if(paragraphs[paragraphs.length - 1][i].style.background === 'lightgreen'){
+                                feedback += '2';
+                            }
+                        }
+                        
+                            feedbacks.push(feedback);
+                            words = getAllMatchingPatterns(guesses[guesses.length - 1], words, feedbacks[feedbacks.length - 1]);
+                        if(guessNum < 6 && words.length !== 0){
+                            guess = getMostCertainWord(words);
+                            guesses.push(guess.toLowerCase());
+                            let boxGrid = document.getElementById("grid");
+                            let row = document.createElement("li");
+                            let currParagraph = [];
+                            for (var i = 0; i < 5; i++) {
+                                let par = document.createElement("p");
+                                par.classList.add("box");
+                                par.appendChild(document.createTextNode(guess[i].toUpperCase()));
+                                currParagraph.push(par);
+                                row.appendChild(par);
+                            }
+                            paragraphs.push(currParagraph);
+                            boxGrid.appendChild(row);
+                            boxes = document.getElementsByTagName('p');
+                        }
+                        else{
+                            alert("if this isn't the answer maker sure that letters that are repeated more than once but are not in the right place should be given colour yellow and not white. Reload and start again >.<");
+                        }
+                    }
+                    
+                    // console.log(guesses[0], feedbacks[0]);
+                }
+                changeColor();
+                
+            }
+        </script>
+    </body>
+</html>
